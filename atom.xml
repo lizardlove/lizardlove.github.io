@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.lizardlove.ren/"/>
-  <updated>2020-01-06T10:58:15.545Z</updated>
+  <updated>2020-01-06T11:08:06.587Z</updated>
   <id>http://blog.lizardlove.ren/</id>
   
   <author>
@@ -17,20 +17,59 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>锚⚓️</title>
+    <link href="http://blog.lizardlove.ren/anchor/"/>
+    <id>http://blog.lizardlove.ren/anchor/</id>
+    <published>2020-01-01T16:00:00.000Z</published>
+    <updated>2020-01-06T11:08:06.587Z</updated>
+    
+    <content type="html"><![CDATA[<p>在虚拟和现实之间穿梭，</p><p>每位旅行家都有两个锚：</p><p>一个铭刻在肉体，</p><p>一个深藏在心底。</p><a id="more"></a><p>仰望星空，</p><p>那是宇宙冰冷的注视；</p><p>俯拾泥土，</p><p>寻找历史遗留的尘埃。</p><p>时间，让身体腐朽；</p><p>现实，让内心混沌。</p><p>在群星的见证下，</p><p>无知和疯狂，</p><p>将迎来血色的狂欢。</p><p>在历史的轮回中，</p><p>曾经，他们不懂；</p><p>现在，我们不懂。</p><p>终于，</p><p>它们锈了，我们病了。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在虚拟和现实之间穿梭，&lt;/p&gt;&lt;p&gt;每位旅行家都有两个锚：&lt;/p&gt;&lt;p&gt;一个铭刻在肉体，&lt;/p&gt;&lt;p&gt;一个深藏在心底。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="生活" scheme="http://blog.lizardlove.ren/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>害怕</title>
+    <link href="http://blog.lizardlove.ren/fear/"/>
+    <id>http://blog.lizardlove.ren/fear/</id>
+    <published>2019-12-14T16:00:00.000Z</published>
+    <updated>2020-01-06T11:11:33.962Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/hunt.webp" alt=""></p><a id="more"></a><p>（一）</p><p>人们永远不会为自己的暴行埋单，</p><p>死亡或许是蒙冤者们最好的自白。</p><p>世界也许从来不曾变好或者变坏，</p><p>秩序是因为头顶厚重深沉的黑幕，</p><p>艰险来自于窥视血腥残酷的暗影，</p><p>我们每个人都是如此野蛮又盲从。</p><p>（二）</p><p>潘多拉的盒子无声间打开，</p><p>情绪的种子在人群中蔓延。</p><p>正义的使者们在传播真相，</p><p>所有人都在享受这刻欢愉。</p><p>却没有人听到那一声碎响，</p><p>是TA们用死亡向世界告白。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;/images/hunt.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="生活" scheme="http://blog.lizardlove.ren/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>小丑</title>
     <link href="http://blog.lizardlove.ren/Joker/"/>
     <id>http://blog.lizardlove.ren/Joker/</id>
     <published>2019-11-10T16:00:00.000Z</published>
-    <updated>2020-01-06T10:58:15.545Z</updated>
+    <updated>2020-01-06T11:07:10.325Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/images/SSR.png" alt="SSR"></p><p>他是一个无知的哥谭群众，在等待下一场狂欢。</p><p>他是一个背负罪恶的好人，在混乱中释放罪恶。</p><p>他是一个疯狂的正义使者，在舞台上陷入狂欢。</p><p>他在哥谭，但这里没有阿卡姆。</p>]]></content>
+    <content type="html"><![CDATA[<p><img src="/images/joker-trailer.jpg" alt="SSR"></p><a id="more"></a><p>他是一个无知的哥谭群众，在等待下一场狂欢。</p><p>他是一个背负罪恶的好人，在混乱中释放罪恶。</p><p>他是一个疯狂的正义使者，在舞台上陷入狂欢。</p><p>他在哥谭，但这里没有阿卡姆。</p>]]></content>
     
     <summary type="html">
     
-      
-      
-        &lt;p&gt;&lt;img src=&quot;/images/SSR.png&quot; alt=&quot;SSR&quot;&gt;&lt;/p&gt;&lt;p&gt;他是一个无知的哥谭群众，在等待下一场狂欢。&lt;/p&gt;&lt;p&gt;他是一个背负罪恶的好人，在混乱中释放罪恶。&lt;/p&gt;&lt;p&gt;他是一个疯狂的正义使者，在舞台上陷入狂欢。&lt;/p&gt;&lt;p&gt;他在哥谭，但这里没
-      
+      &lt;p&gt;&lt;img src=&quot;/images/joker-trailer.jpg&quot; alt=&quot;SSR&quot;&gt;&lt;/p&gt;
     
     </summary>
     
