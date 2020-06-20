@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.lizardlove.ren/"/>
-  <updated>2020-02-23T05:47:29.874Z</updated>
+  <updated>2020-06-20T11:40:40.406Z</updated>
   <id>http://blog.lizardlove.ren/</id>
   
   <author>
@@ -15,6 +15,48 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从时间轮开始的思考</title>
+    <link href="http://blog.lizardlove.ren/timeWheel/"/>
+    <id>http://blog.lizardlove.ren/timeWheel/</id>
+    <published>2020-06-18T16:00:00.000Z</published>
+    <updated>2020-06-20T11:40:40.406Z</updated>
+    
+    <content type="html"><![CDATA[<p>时间轮算法是定时器系统衍生出来的一种调度方案，非常巧妙，令人印象深刻。本文就是在实现多层时间轮算法的过程中，突然想到了之前学习嵌入式系统中提到的时间差分链，回头重新看了一下，它们之间确实有所关联。</p><a id="more"></a><p>在进入时间轮和差分链之前，先梳理一下它们共同的源头，设备时钟系统。</p><h3 id="设备时钟系统"><a href="#设备时钟系统" class="headerlink" title="设备时钟系统"></a>设备时钟系统</h3><p>一个系统同一时刻可以执行的任务数量必然是有限的，因此就需要安排任务执行的先后次序，而这个次序，就是调度，这个先后，就是时间。因此时间调度就是系统的基础。但计算机设备是如何感知到时间呢，这就是由设备时钟系统的工作。</p><p>设备时钟系统首先分为两个部分，硬件时钟和系统时钟。</p><ul><li>硬件时钟：计算机硬件设备按照一个固定的频率产生一个时钟脉冲</li><li>系统时钟：系统启动后，以硬件时钟为基准开始计时，产生标准的系统时间</li></ul><p>但我们其实应该知道，物理设备由于现实物理条件，总会产生损耗，这就导致物理设备产生的硬件时钟，不可避免的会产生偏差，因此，更多时候，系统时钟是通过网络获取统一的网络时钟为基础。当然这不是今天的重点，但这在我们认识时钟系统时需要注意的问题。</p><p>有了标准的时间度量后，系统就可以根据标准的时间度量就任务进行规划，因此产生了各种的调度策略。</p><p>但这里需要进行一点区分，上面这部分所说的任务调度，实际上是指CPU的任务调度策略，也就是我们初学操作系统时所认识到的那几种进程调度方案，如先来先服务、短进程优先、高响比、时间片轮转等。这里的任务调度是核心中的核心，其目的是资源竞争的调度方案。而我们今天要说的时间轮和差分链，其调度为定时响应，即目标任务并不是立即执行的，而是有一个间隔，过了时间间隔后再执行任务。</p><p>这两种调度之间的关系，简单举例，我们有一个需要3s后再执行的任务，首先需要通过定时响应调度方案先加入定时系统，3s后响应，将该任务从定时系统中取出，放入执行队列中，参与任务调度竞争CPU或其他资源，即先定时响应调度，后资源竞争调度。</p><h3 id="定时响应"><a href="#定时响应" class="headerlink" title="定时响应"></a>定时响应</h3><p>是的，时间轮和差分链表都属于定时响应的范畴，抛开通用计算机系统和嵌入式系统的区别，他们二者的目的都是一样的，都是用来存放需要延时处理的对象或事件，即定时器。</p><p>一个延时任务就是一个定时器，当有多个定时器待执行时，我们需要按照其延时时间依次执行，这就是定时响应调度算法所做的事。</p><p>在定时器调度模型中，通常有3种实现方式：</p><h4 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h4><p>定时器管理程序维护一个链表，当有新的定时器加入时添加到末尾，每次tick更新，需要维护链表上的所有定时器的定时值，当定时值为0则取出执行。</p><p><img src="../images/chafen.png" alt=""></p><p>差分链表则属于链表法的一种变形，实际上是一种排序链表，其也只需维护一个链表，只不过在添加新的定时器时，依序查看链表种定时器的等待时间，每经过一个定时器，自身定时时间减少经过的那个定时器的时间，当经过某个定时器，自身的定时时间小于0时，则插入到该定时器前面。其后每次tick更新时，只需更新链首的定时时间，当为0时调用执行。</p><h4 id="树"><a href="#树" class="headerlink" title="树"></a>树</h4><p>树结构定时器通常应用为最小堆，最小堆将定时器按照最小堆的结构保存，堆定是最小的定时器，每次添加新的定时器，通常根据堆更新的时间复杂度，可以在O(lgn)内完成更新，每次tick是检查堆顶，等待执行。</p><h4 id="时间轮"><a href="#时间轮" class="headerlink" title="时间轮"></a>时间轮</h4><p><img src="../images/timeWheel.png" alt="timeWheel"></p><p>时间轮非常直观，如图所示，时间轮管理器维护一个表盘，表盘有多个插槽，每隔插槽有一个定时器列表，当指针指到某个插槽时，则执行其中的定时器，当添加新的定时器时，只需要简单求余运算，即可知道需要插入的插槽，每次tick只需移动指针即可。</p><p>但如果只维护一个简单的时间轮，那么可添加的定时器的定时时间不能超过（该时间轮的插槽数*tick）时间，因此就有今天的主题，引发这一系列思考的多层时间轮算法，水表法。</p><p><img src="../images/waterTable.jpeg" alt=""></p><p>如图所示，水表上有多个小的轮子，其轮子之间呈递进关系，当规格小的轮子绕完一圈时，较高一级的轮子才前进一格，多层时间轮同理，每个时间轮的每个插槽都维护一个定时列表，当小轮子转完一圈后，较大一层的轮子前进一格，并将其列表上的定时器更新到下层的时间轮，依次执行。</p><p>判断一个定时器系统好坏，主要从两方面进行考虑，新增定时器和定时器响应的时间复杂度，虽然有些地方也将删除定时器作为考察指标，但其实删除定时器的使用频率非常小，故不选择加入考察。以上几种方案的各项时间复杂度如下所示：</p><table><thead><tr><th>方案</th><th>新增定时器</th><th>定时器响应</th></tr></thead><tbody><tr><td>差分链</td><td>O(n)</td><td>O(1)</td></tr><tr><td>最小堆</td><td>O(lgn)</td><td>O(1)</td></tr><tr><td>时间轮</td><td>O(1)</td><td>O(1)</td></tr></tbody></table><h3 id="时间轮优化"><a href="#时间轮优化" class="headerlink" title="时间轮优化"></a>时间轮优化</h3><p>到了这里，终于到了我为何要写今天这篇文章的起因了。我在实现水表法的过程，发觉其实水表法时间轮的新增定时器的时间复杂度并不是O(1)，应该是O(m)，这个m是时间轮的个数。</p><p>上面我们也说了，为什么会发展出多层时间轮，主要就是为了解决单个时间轮不能调度超过一圈时间的定时器，即不能添加任意时间的定时器。虽然严格点说，多层定时器，也有一个最大的时间界限，只不过这个界限随着轮子数的扩充，指数级增长，约等于任意时间了。但轮子数的增加，也带来了一个新的问题，就是时间轮之间的维护。</p><p>多层时间轮新增定时器的时间复杂度为O(m)，定时器响应的时间复杂度为O(1)。但我在实现过程中却发现，多层时间轮管理器的维护开销不容小觑。但我们往往衡量一个定时器系统是并不太关注其内部运行维护的开销。</p><p>以一个5层10插槽的时间轮为例，现在各层的指针指向的插槽值为[9,9,9,9,2]，</p><ul><li>现在来了一个新的tick，第1层指向了0，需要更新当前时间轮的插槽的定时器列表，则需要向上请求</li><li>第2层收到请求，指针+1，发现归0，向第3层请求，</li><li>第3层收到请求，指针+1，发现归0，向第4层请求</li><li>第4层收到请求，指针+1，发现归0，向第5层请求</li><li>第5层收到请求，指针+1，指向3，取出3中的定时器列表，下发到第4层</li><li>第4层收到定时器列表，遍历依次插入对应的插槽，取出0中的定时器，下发到第3层</li><li>第3层收到定时器列表，遍历依次插入对应的插槽，取出0中的定时器，下发到第2层</li><li>第2层收到定时器列表，遍历依次插入对应的插槽，取出0中的定时器，下发到第1层</li><li>第1层收到定时器列表，遍历依次插入对应的插槽，取出0中的定时器，执行</li></ul><p>这里可以看出，这种向上访问，再下放的方式，其维护开销的时间复杂度为O($log_{10}^{n}$)。因此，从一个定时器添加到多层时间轮管理到执行，总的时间复杂度为O(m+$log_{10}^n$)。</p><p>这个时候，我想到了单层时间轮和差分链，那么分别看看单层时间轮和差分链的几项指标</p><ul><li>新增定时器<ul><li>单层时间轮：O(1)，一次取余操作插入对应的插槽，但不能添加任意时间的定时器</li><li>差分链：O(n)，依次遍历链上对象，找到合适的位置插入，但可以添加任意时间的定时器</li></ul></li><li>运行时维护<ul><li>单层时间轮：时间轮指针移动，不用操作定时器</li><li>差分链：链首对象定时值减1</li></ul></li><li>定时器响应<ul><li>单层时间轮：取出指向插槽的定时器，执行</li><li>差分链：取出链首定时器，执行</li></ul></li></ul><p>我就想，把单层定时器和差分链嫁接一下，就有了我的“改进”版单层时间轮。</p><p>我的时间轮方案中，时间轮管理器内部维护一个动态数组，和一个单层时间轮。每次新增定时器时，先判断其是否会在本轮剩余时间内启动，如果会启动，则加入相应的插槽；如果不会启动，则插入动态数组中，这里通过二分查找法，可以达到O(lgn)的复杂度，总的来说，该方案新增定时器的时间复杂度为O(lgn)。</p><p>而后只需在每次时间轮转完一圈后，启动一次时间轮更新操作就可以完成更新，即依次遍历动态数组，取出小于一本轮终点tick的定时器，插入时间轮插槽，这里的动态数组由于先前插入时经过二分查找法，是一个顺序数组，因此不会有额外的操作，但询问到一个不合规的定时器，即可跳出循环。因此，这里的运行维护，可以认为是O(1)。</p><p>最后的执行阶段，则同单层定时器一样，按指针选择执行即可，复杂度为O(1)。</p><p>因此，本文提出的改进方案的三项复杂度分别为，新增定时器O(lgn)、运行时维护O(1)、定时器响应O(1)。与多层定时器O(m+lgn)相比，本文方案复杂度为O(lgn)，好想更好一点，而且本文方案是真正支持任意时间的定时器，虽然这个功能并不算什么。</p><h3 id="结"><a href="#结" class="headerlink" title="结"></a>结</h3><p>其实后来自己想了想，这样动态数组+单层定时器的组合方式初看似乎是比多层时间轮更好，但这里其实忽略了动态数组的维护损耗，但动态数组的维护损耗又很难量化。当数量达到一定量级的定时器任务时，孰优孰劣就很难说了。</p><p>暂时就到这里了，网络上林林总总也没看到有人这方面的比较，就记录一下，至少这个网课没白上。😊</p><p><a href="https://github.com/lizardlove/networkPorject/tree/master/lesson5" target="_blank" rel="noopener">实现代码</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;时间轮算法是定时器系统衍生出来的一种调度方案，非常巧妙，令人印象深刻。本文就是在实现多层时间轮算法的过程中，突然想到了之前学习嵌入式系统中提到的时间差分链，回头重新看了一下，它们之间确实有所关联。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="学习" scheme="http://blog.lizardlove.ren/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Three.js 速记</title>
+    <link href="http://blog.lizardlove.ren/threeJsNote/"/>
+    <id>http://blog.lizardlove.ren/threeJsNote/</id>
+    <published>2020-04-19T16:00:00.000Z</published>
+    <updated>2020-04-27T09:45:02.132Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://threejs.org/docs/index.html#manual/zh/introduction/Creating-a-scene" target="_blank" rel="noopener">Three.js</a></p><a id="more"></a><p><img src="https://threejsfundamentals.org/threejs/lessons/resources/images/threejs-structure.svg" alt="img"></p><p>基本三要素</p><ul><li><p>场景</p><p>THREE.Scene</p></li><li><p><a href="https://threejs.org/docs/index.html#api/zh/cameras/Camera" target="_blank" rel="noopener">相机</a>，默认朝向z负轴</p><p>THREE.PerspectiveCamera(for, aspect, near, far)</p><ul><li>相机在世界坐标系中的位置position(x,y,z)</li><li>视点坐标系上方向的世界坐标系向量up.set(x,y,z)</li><li>相机在世界坐标系的焦点的位置lookAt(x,y,z)</li></ul></li><li><p>渲染器 THREE.WebGLRenderer</p><p>Renderer.render(scene, camera)</p><blockquote><p>一张画布(canvas)可以有多个场景，一个场景可以有多个相机，渲染到屏幕上不是由画布决定的，而是相机绑定的元素，单一相机，单一场景默认绑定在canvas元素</p></blockquote></li></ul><p>渲染一个图形</p><ul><li><p>创建一个图形</p><ul><li><p>几何信息</p><p><a href="https://threejs.org/docs/index.html#api/zh/geometries/BoxBufferGeometry" target="_blank" rel="noopener">THREE.??Geometry</a></p></li><li><p><a href="https://threejs.org/docs/index.html#api/zh/materials/Material" target="_blank" rel="noopener">图形材质</a></p><ul><li><p>不反射：THREE.MeshBasicMaterial</p></li><li><p>漫反射：THREE.MeshLambertMaterial</p></li><li><p>镜面反射THREE.MeshPhongMaterial, shininess(光滑度)</p></li><li><p>标准材质 THREE.MeshStandardMaterial. roughness(粗糙度), meatless(金属光泽)</p></li><li><p>物理材质 THREE.MeshPhysicalMaterial. clearcoat(透明度)</p></li><li><p>阴影材质 THREE.MEshDepthMaterial</p></li><li><p>法向材质 THREE.MeshNormalMaterial</p></li><li><p><a href="https://threejs.org/docs/index.html#api/zh/textures/Texture" target="_blank" rel="noopener">纹理</a> THREE.TextureLoader(THREE.LoadingManager())</p><blockquote><p>!!内存占用：width*height*4*1.33字节</p></blockquote></li></ul></li></ul></li></ul><ul><li><p>构建<a href="https://threejs.org/docs/index.html#api/zh/objects/Bone" target="_blank" rel="noopener">物体</a>：Bone Line Mesh Points Skeleton sprite</p><p>THREE.Mesh(geometry, material)</p></li></ul><ul><li><p>添加到场景中</p><blockquote><p>parent.add(child) child属性被parent的属性覆盖</p></blockquote><p>Scene.add(mesh)</p></li><li><p>添加<a href="https://threejs.org/docs/index.html#api/zh/lights/Light" target="_blank" rel="noopener">灯光</a></p><ul><li><p>定义灯光：定义灯光需要设置相应的图元材质模型才有效果</p><blockquote><p>在渲染时，是按光源进行阴影绘制的，每个带有阴影的光源都会对全局渲染一次，大小受光的阴影相机范围控制light.shadow.camera。</p><p>另可用阴影贴图代替</p></blockquote><ul><li>基本光：THREE.Ligth(color, intensity) color为光颜色，intensity为光强</li><li>平行光 THREE.DirectionalLight</li><li>环境光 THREE.AmbientLight</li><li>半球光 THREE.HemisphereLight</li><li>点光源 THREE.PointLight</li><li>平面光光源 THREE.RectAreaLight</li><li>聚光灯 THREE.SpotLight</li></ul></li><li><p>灯光位置</p><p>light.position.set(x,y,z)</p></li><li><p>添加灯光</p><p>Scene.add(light)</p></li></ul></li><li><p>渲染图形</p><p>Renderer.render(scene, camera)</p></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://threejs.org/docs/index.html#manual/zh/introduction/Creating-a-scene&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Three.js&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="总结" scheme="http://blog.lizardlove.ren/categories/%E6%80%BB%E7%BB%93/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>活在阴影中的鬼</title>
