@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.lizardlove.ren/gameInteractive/</loc>
+    
+    <lastmod>2021-09-17T13:15:11.947Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.lizardlove.ren/frontBasic/</loc>
+    
+    <lastmod>2021-06-19T07:47:57.561Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.lizardlove.ren/computerGraphicNote/</loc>
+    
+    <lastmod>2021-01-19T09:53:12.053Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.lizardlove.ren/ghost/</loc>
+    
+    <lastmod>2021-01-19T02:27:23.236Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.lizardlove.ren/theatre/</loc>
     
     <lastmod>2021-01-01T14:37:33.726Z</lastmod>
@@ -19,13 +47,6 @@
     <loc>http://blog.lizardlove.ren/threeJsNote/</loc>
     
     <lastmod>2020-04-27T09:45:02.132Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.lizardlove.ren/ghost/</loc>
-    
-    <lastmod>2020-02-23T05:47:29.874Z</lastmod>
     
   </url>
   
@@ -103,13 +124,6 @@
     <loc>http://blog.lizardlove.ren/late/</loc>
     
     <lastmod>2020-01-06T10:36:15.976Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.lizardlove.ren/frontBasic/</loc>
-    
-    <lastmod>2020-01-06T10:35:30.751Z</lastmod>
     
   </url>
   
